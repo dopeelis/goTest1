@@ -8,12 +8,13 @@ import (
 func main() {
 	// Задаем исходные данные
 	myArr := []int{2, 4, 5, 6, 8, 10}
+
 	// Объявляем счетчик исполняемых горутин
 	var wg sync.WaitGroup
-	// Задаем количество вызовов, равное количеству элементов
-	wg.Add(len(myArr))
+
 	// Выводим результат в консоль
 	for i := range doubleChan(writeChan(myArr)) {
+		wg.Add(1)
 		fmt.Println(i)
 		wg.Done()
 	}
