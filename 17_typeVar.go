@@ -18,5 +18,21 @@ func main() {
 
 // Функция проверки типа переменной
 func dataType(v interface{}) string {
-	return fmt.Sprintf("%T", v)
+	switch t := v.(type) {
+	case int:
+		return "int"
+	case float64:
+		return "float64"
+	case string:
+		return "string"
+	case chan int:
+		return "chan int"
+	case chan string:
+		return "chan string"
+	case bool:
+		return "bool"
+	default:
+		_ = t
+		return "unknown type"
+	}
 }
