@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"math/rand"
 	"time"
@@ -15,32 +16,34 @@ func main() {
 	// Объявляем канал, куда будем записывать значения
 	ch := make(chan int, 100)
 
-	// Объявляем канал для завершения программы
-	done := make(chan struct{})
+	// Создаем новый контекст с функцией отмены
+	ctx, cancel := context.WithCancel(context.Background())
 
-	// Записываем значения в основной канал
-	// Пока ждем записи из канала завершения
-	go func() {
+	go func(ctx context.Context) {
 		for {
 			select {
-			case ch <- randNum():
-			case <-done:
+			// Если выполнена отмена
+			case <-ctx.Done():
 				close(ch)
 				return
+			// Иначе записываем в канал
+			default:
+				ch <- randNum()
 			}
-			time.Sleep(1 * time.Second)
-		}
-	}()
 
-	// Функция для записи в канал завершения
+			time.Sleep(500 * time.Millisecond)
+		}
+	}(ctx)
+
+	// Вызываем отмену через 3 секунды
 	go func() {
 		time.Sleep(3 * time.Second)
-		done <- struct{}{}
+		cancel()
 	}()
 
-	// Выводим значения из основного канала
+	// Выводим значения из канала в консоль
 	for i := range ch {
-		fmt.Println("value:", i)
+		fmt.Println(i)
 	}
 
 	// Обозначаем конец программы
