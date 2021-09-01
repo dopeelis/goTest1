@@ -26,15 +26,18 @@ func quickSsort(arr []int) []int {
 	// Смещаем опорный элемент вправо
 	arr[pivot], arr[right] = arr[right], arr[pivot]
 
-	// Проходимся циклом по всем элементам, левее середины
+	// Проходимся циклом по всем элементам
 	for i := range arr {
 		if arr[i] < arr[right] {
+			// Если они меньше, смешаем их влево
 			arr[i], arr[left] = arr[left], arr[i]
 			left++
 		}
 	}
 
 	// Меняем ячейки друг с другом
+	// т.к. сам элемент arr[right] не был отсортирован
+	// Теперь середина это left
 	arr[left], arr[right] = arr[right], arr[left]
 
 	// Проходимся сортировкой по оставшимся частям

@@ -19,12 +19,11 @@ func main() {
 	fmt.Println("binary value:", bitVal)
 
 	// Для изменения бита в порядке "слева направо"
-	// Если так не надо, то можно просто убрать данную строку
-	// И заменить в сдвиге на bitNum
-	realBitNum := len(bitVal) - 1 - bitNum
+	// realBitNum := len(bitVal) - 1 - bitNum
+	// И использовать realBitNum вместо bitNum ниже
 
 	// Переключение бита
-	newVal := val ^ (1 << realBitNum)
+	newVal := val ^ (1 << bitNum)
 	fmt.Println("new value:", newVal)
 
 	// Проверка, что все заменилось, как нужно

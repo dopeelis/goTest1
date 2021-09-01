@@ -5,42 +5,38 @@ import (
 	"sync"
 )
 
+type counter struct {
+	count int
+	mu    *sync.Mutex
+}
+
+func newCounter() counter {
+	newCount := counter{}
+	newCount.count = 0
+	newCount.mu = new(sync.Mutex)
+	return newCount
+}
+
+func (c *counter) increment() {
+	c.mu.Lock()
+	c.count++
+	c.mu.Unlock()
+}
+
 func main() {
-	// Создаем первое значение для счетчика
-	counter := 0
+	myCounter := newCounter()
+	countEnd := 20
+	wg := new(sync.WaitGroup)
+	wg.Add(countEnd)
 
-	// Задаем конечное значение
-	end := 200
+	for i := 0; i < countEnd; i++ {
+		go func(c *counter) {
+			defer wg.Done()
+			c.increment()
+		}(&myCounter)
 
-	// Создаем буферизированный канал
-	// Пустая структура занимает меньше памяти
-	ch := make(chan struct{}, end)
-
-	// Создем счетчики горутин
-	wg := sync.WaitGroup{}
-	wg2 := sync.WaitGroup{}
-
-	wg.Add(end)
-	// Наполняем канал пустыми структурами
-	for i := 0; i < end; i++ {
-		go func(i int) {
-			ch <- struct{}{}
-			wg.Done()
-		}(i)
 	}
-
-	wg2.Add(1)
-	// Увеличиваем значение счетчика
-	go func() {
-		for range ch {
-			counter++
-		}
-		wg2.Done()
-	}()
-
 	wg.Wait()
-	close(ch)
-	wg2.Wait()
 
-	fmt.Println(counter)
+	fmt.Println(myCounter.count)
 }

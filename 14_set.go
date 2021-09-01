@@ -2,33 +2,30 @@ package main
 
 import "fmt"
 
-var exists = struct{}{}
-
-// Создаем структуру, в которой будут наши значения
-type set struct {
-	m map[string]struct{}
-}
-
-// Добвляем нашей структуре функцию создания
-func newSet() *set {
-	s := &set{}
-	s.m = make(map[string]struct{})
-	return s
-}
-
-// И функцию добавления элемента
-func (s *set) add(value string) {
-	s.m[value] = exists
-}
-
 func main() {
+	// Задаем исходные набор строк
 	arr := []string{"cat", "cat", "dog", "cat", "tree"}
-	fmt.Println("Исходный массив:", arr)
+	fmt.Println(arr)
 
-	set := newSet()
+	// Имитируем setM через map
+	setM := make(map[string]struct{})
+
+	// Задаем значение struct{}
+	var exists = struct{}{}
+
+	// Заполняем мап данными
 	for _, i := range arr {
-		set.add(i)
+		setM[i] = exists
+	}
+	fmt.Println(setM)
+
+	// Создаем слайс
+	set := []string{}
+
+	// Записываем значения из нашей мапы в слайс
+	for i := range setM {
+		set = append(set, i)
 	}
 
-	fmt.Println("Set:", set)
+	fmt.Println(set)
 }
